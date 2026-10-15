@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Travel Explorer | Discover the World, One Journey at a Time</title>
+  <meta name="description" content="Explore destinations across India, plan trips and estimate your travel budget.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;800&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+/* ===========================================================
+   Travel Explorer - style.css
+   Palette: dark green, white, sky blue, golden yellow
+   =========================================================== */
+
+/* ---------- 1. Colour variables (change colours here) ---------- */
+:root {
+  --green: #0b3d2e;
+  --green-2: #14604a;
+  --sky: #4fc3f7;
+  --gold: #f4b400;
+  --bg: #ffffff;
+  --bg-alt: #eef7fb;
+  --card: #ffffff;
+  --text: #17302a;
+  --muted: #5d7770;
+  --line: #d9e8e4;
+  --shadow: 0 10px 30px rgba(11, 61, 46, 0.12);
+  --radius: 20px;
+}
+/* Dark mode: same variables, new values */
+[data-theme="dark"] {
+  --bg: #07201a;
+  --bg-alt: #0b2c24;
+  --card: #103a30;
+  --text: #eaf5f1;
+  --muted: #9bb9b0;
+  --line: #1f5144;
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+/* ---------- 2. Base ---------- */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; scroll-padding-top: 76px; }
+body { font-family: 'Poppins', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.65; transition: background .3s, color .3s; }
+h1, h2, h3, .logo { font-family: 'Playfair Display', Georgia, serif; line-height: 1.2; }
+a { color: inherit; text-decoration: none; }
+img { max-width: 100%; display: block; }
+ul { list-style: none; }
+.container { width: min(1140px, 100% - 40px); margin-inline: auto; }
+.section { padding: 90px 0; }
+.section.alt { background: var(--bg-alt); }
+.section-head { text-align: center; max-width: 620px; margin: 0 auto 36px; }
+h2 { font-size: clamp(1.8rem, 4vw, 2.6rem); color: var(--green); margin-bottom: 10px; }
+[data-theme="dark"] h2 { color: var(--gold); }
+.muted { color: var(--muted); }
+:focus-visible { outline: 3px solid var(--sky); outline-offset: 3px; }
+
+/* ---------- 3. Buttons ---------- */
+.btn { display: inline-block; border: 0; cursor: pointer; font: 600 1rem 'Poppins', sans-serif; padding: 14px 30px; border-radius: 999px; transition: transform .2s, box-shadow .2s; }
+.btn:hover { transform: translateY(-3px); box-shadow: 0 10px 22px rgba(0, 0, 0, .2); }
+.btn-gold { background: var(--gold); color: #1b1b1b; }
+.btn-green { background: var(--green); color: #fff; }
+[data-theme="dark"] .btn-green { background: var(--gold); color: #1b1b1b; }
+.icon-btn { background: rgba(255, 255, 255, .15); color: #fff; border: 0; width: 42px; height: 42px; border-radius: 50%; cursor: pointer; font-size: 1.1rem; transition: background .2s; }
+.icon-btn:hover { background: rgba(255, 255, 255, .3); }
+
+/* ---------- 4. Navigation ---------- */
+.navbar { position: fixed; inset: 0 0 auto; z-index: 50; transition: background .3s, box-shadow .3s; }
+.navbar.scrolled { background: var(--green); box-shadow: 0 6px 20px rgba(0, 0, 0, .25); }
+.nav-inner { display: flex; align-items: center; justify-content: space-between; height: 72px; }
+.logo { font-size: 1.5rem; font-weight: 800; color: #fff; }
+.logo span { color: var(--gold); }
+nav { display: flex; gap: 28px; }
+nav a { color: #fff; font-weight: 500; padding: 6px 0; border-bottom: 2px solid transparent; transition: border-color .2s, color .2s; }
+nav a:hover, nav a.active { color: var(--gold); border-color: var(--gold); }
+.nav-actions { display: flex; gap: 10px; }
+.menu-btn { display: none; }
+
+/* ---------- 5. Hero ---------- */
+.hero { min-height: 100vh; display: grid; place-items: center; text-align: center; padding: 120px 20px 80px; color: #fff; position: relative;
+  background:
+    linear-gradient(180deg, rgba(11, 61, 46, .55), rgba(11, 61, 46, .8)),
+    var(--hero-img, none) center / cover fixed,
+    linear-gradient(135deg, #0b3d2e, #4fc3f7); }
+.hero-content { max-width: 800px; animation: rise 1s ease both; }
+.hero h1 { font-size: clamp(2.3rem, 6.5vw, 4.6rem); font-weight: 800; margin-bottom: 18px; }
+.hero p { font-size: 1.15rem; max-width: 600px; margin: 0 auto 30px; opacity: .93; }
+.scroll-hint { position: absolute; bottom: 24px; left: 50%; font-size: 2rem; color: var(--gold); animation: bounce 1.8s infinite; }
+@keyframes rise { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: none; } }
+@keyframes bounce { 0%, 100% { transform: translate(-50%, 0); } 50% { transform: translate(-50%, 10px); } }
+
+/* ---------- 6. Search and filters ---------- */
+.toolbar { display: grid; gap: 16px; margin-bottom: 34px; }
+#searchInput { width: 100%; padding: 15px 22px; border-radius: 999px; border: 2px solid var(--line); background: var(--card); color: var(--text); font: 1rem 'Poppins', sans-serif; }
+#searchInput:focus { border-color: var(--sky); outline: none; }
+.chips { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+.chip { border: 2px solid var(--green-2); background: transparent; color: var(--text); padding: 8px 20px; border-radius: 999px; font: 500 .92rem 'Poppins', sans-serif; cursor: pointer; transition: all .2s; }
+.chip:hover { border-color: var(--gold); }
+.chip.active { background: var(--green); border-color: var(--green); color: #fff; }
+[data-theme="dark"] .chip.active { background: var(--gold); border-color: var(--gold); color: #1b1b1b; }
+.chip span { background: var(--gold); color: #1b1b1b; border-radius: 999px; padding: 0 8px; font-size: .78rem; margin-left: 4px; }
+
+/* ---------- 7. Destination cards ---------- */
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 26px; }
+.card { background: var(--card); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); display: flex; flex-direction: column; transition: transform .3s, box-shadow .3s; }
+.card:hover { transform: translateY(-8px); box-shadow: 0 18px 40px rgba(11, 61, 46, .25); }
+.card-img { position: relative; height: 200px; overflow: hidden; background: linear-gradient(135deg, var(--green-2), var(--sky)); display: grid; place-items: center; font-size: 3rem; }
+.card-img img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .5s; }
+.card:hover .card-img img { transform: scale(1.1); }
+.heart { position: absolute; top: 12px; right: 12px; z-index: 2; width: 40px; height: 40px; border: 0; border-radius: 50%; background: rgba(255, 255, 255, .92); color: #888; font-size: 1.3rem; cursor: pointer; transition: transform .2s; }
+.heart:hover { transform: scale(1.15); }
+.heart.on { color: #e53950; animation: pop .35s; }
+@keyframes pop { 50% { transform: scale(1.35); } }
+.card-body { padding: 18px 20px 22px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+.card-body h3 { font-size: 1.35rem; color: var(--green); }
+[data-theme="dark"] .card-body h3 { color: var(--gold); }
+.tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.tags span { font-size: .75rem; background: var(--bg-alt); color: var(--green-2); padding: 2px 10px; border-radius: 999px; font-weight: 500; }
+[data-theme="dark"] .tags span { color: var(--sky); }
+.card-body p { color: var(--muted); font-size: .92rem; }
+.card-foot { margin-top: auto; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-top: 10px; }
+.cost small { display: block; color: var(--muted); font-size: .72rem; line-height: 1.2; }
+.cost b { color: var(--green-2); font-size: 1.1rem; }
+[data-theme="dark"] .cost b { color: var(--sky); }
+.more { border: 0; cursor: pointer; background: var(--sky); color: #06303f; font: 600 .85rem 'Poppins', sans-serif; padding: 9px 16px; border-radius: 999px; transition: background .2s; }
+.more:hover { background: var(--gold); }
+.empty { text-align: center; color: var(--muted); padding: 30px; }
+
+/* ---------- 8. Forms and result cards ---------- */
+.calc-wrap { display: grid; grid-template-columns: 1.1fr .9fr; gap: 40px; align-items: start; }
+.calc-wrap p { color: var(--muted); margin-bottom: 20px; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.form-grid label { display: grid; gap: 6px; font-weight: 500; font-size: .9rem; }
+.form-grid .full { grid-column: 1 / -1; }
+input, select, textarea { width: 100%; padding: 12px 16px; border-radius: 14px; border: 2px solid var(--line); background: var(--card); color: var(--text); font: 1rem 'Poppins', sans-serif; }
+input:focus, select:focus, textarea:focus { border-color: var(--sky); outline: none; }
+input.invalid, select.invalid, textarea.invalid { border-color: #e53950; }
+.error { color: #e53950; font-size: .8rem; min-height: 1em; }
+.success { color: #1d9a5b; font-weight: 600; }
+.notice { background: rgba(244, 180, 0, .18); border-left: 4px solid var(--gold); padding: 10px 16px; border-radius: 8px; color: var(--text) !important; }
+.result-card { background: linear-gradient(145deg, var(--green), var(--green-2)); color: #fff; border-radius: var(--radius); padding: 30px; box-shadow: var(--shadow); }
+.result-card h3 { color: var(--gold); margin-bottom: 8px; font-size: 1.4rem; }
+.result-card .muted { color: #cfe6df; }
+.big { font-family: 'Playfair Display', serif; font-size: clamp(2.2rem, 5vw, 3.2rem); font-weight: 800; margin-bottom: 14px; word-break: break-word; }
+.breakdown li { display: flex; justify-content: space-between; gap: 12px; padding: 10px 0; border-top: 1px solid rgba(255, 255, 255, .18); }
+.breakdown b { text-align: right; }
+
+/* ---------- 9. Testimonials, About ---------- */
+.testimonials { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; }
+.t-card { background: var(--card); border-radius: var(--radius); padding: 28px; box-shadow: var(--shadow); border-top: 5px solid var(--gold); }
+.t-card p { font-style: italic; margin-bottom: 14px; }
+.t-card cite { font-weight: 600; color: var(--green-2); font-style: normal; }
+[data-theme="dark"] .t-card cite { color: var(--sky); }
+.t-card cite span { color: var(--muted); font-weight: 400; }
+.about { display: grid; grid-template-columns: 1fr 1fr; gap: 44px; align-items: center; }
+.about p { color: var(--muted); margin-bottom: 14px; }
+.about-img { border-radius: var(--radius); box-shadow: var(--shadow); width: 100%; height: 340px; object-fit: cover; background: linear-gradient(135deg, var(--green-2), var(--sky)); }
+.stats { display: flex; gap: 30px; margin-top: 20px; flex-wrap: wrap; }
+.stats b { display: block; font: 800 2rem 'Playfair Display', serif; color: var(--gold); }
+.stats span { font-size: .85rem; color: var(--muted); }
+
+/* ---------- 10. Footer ---------- */
+.footer { background: var(--green); color: #d8ece5; padding: 50px 0 20px; }
+.foot-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
+.socials { display: flex; gap: 12px; }
+.socials a { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 50%; background: rgba(255, 255, 255, .12); color: #fff; font-weight: 700; transition: background .2s, transform .2s; }
+.socials a:hover { background: var(--gold); color: #1b1b1b; transform: translateY(-4px); }
+.copy { text-align: center; margin-top: 30px; padding-top: 18px; border-top: 1px solid rgba(255, 255, 255, .15); font-size: .85rem; }
+
+/* ---------- 11. Modal ---------- */
+.modal { position: fixed; inset: 0; background: rgba(4, 20, 15, .75); display: grid; place-items: center; padding: 16px; z-index: 100; animation: fade .25s; }
+.modal[hidden] { display: none; }
+.modal-box { background: var(--card); border-radius: var(--radius); width: min(720px, 100%); max-height: 92vh; overflow-y: auto; position: relative; animation: rise .35s; }
+.modal-img { height: 240px; background: linear-gradient(135deg, var(--green-2), var(--sky)) center / cover; }
+.modal-body { padding: 24px 28px 30px; }
+.modal-body h3 { font-size: 2rem; color: var(--green); }
+[data-theme="dark"] .modal-body h3 { color: var(--gold); }
+.modal-body p { color: var(--muted); margin: 6px 0 12px; }
+.modal-body h4 { margin: 16px 0 6px; color: var(--green-2); }
+[data-theme="dark"] .modal-body h4 { color: var(--sky); }
+.modal-body li { padding: 4px 0 4px 22px; position: relative; }
+.modal-body li::before { content: "✓"; position: absolute; left: 0; color: var(--gold); font-weight: 700; }
+.modal-body .btn { margin-top: 22px; }
+.modal-close { position: absolute; top: 14px; right: 14px; z-index: 3; width: 38px; height: 38px; border: 0; border-radius: 50%; background: rgba(255, 255, 255, .92); cursor: pointer; font-size: 1rem; }
+@keyframes fade { from { opacity: 0; } }
+
+/* ---------- 12. Back to top and scroll reveal ---------- */
+.to-top { position: fixed; right: 20px; bottom: 20px; width: 48px; height: 48px; border: 0; border-radius: 50%; background: var(--gold); color: #1b1b1b; font-size: 1.4rem; font-weight: 700; cursor: pointer; box-shadow: var(--shadow); z-index: 60; transition: transform .2s; }
+.to-top:hover { transform: translateY(-4px); }
+.to-top[hidden] { display: none; }
+.reveal { opacity: 0; transform: translateY(32px); transition: opacity .7s ease, transform .7s ease; }
+.reveal.visible { opacity: 1; transform: none; }
+
+/* ---------- 13. Responsive ---------- */
+@media (max-width: 860px) {
+  .calc-wrap, .about { grid-template-columns: 1fr; }
+  .menu-btn { display: inline-block; }
+  nav { position: absolute; top: 100%; left: 0; right: 0; background: var(--green); flex-direction: column; gap: 0; padding: 8px 24px 16px; display: none; }
+  nav.open { display: flex; }
+  nav a { padding: 12px 0; }
+  .hero { background-attachment: scroll; }
+}
+@media (max-width: 520px) {
+  .section { padding: 64px 0; }
+  .form-grid { grid-template-columns: 1fr; }
+  .foot-inner { flex-direction: column; text-align: center; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  .reveal { opacity: 1; transform: none; }
+}
+
+/* safe areas for phones */
+.navbar{padding-top:env(safe-area-inset-top,0px)}
+.to-top{bottom:calc(20px + env(safe-area-inset-bottom,0px))}
+
+</style>
+</head>
+<body>
+
+<!-- ============ NAVIGATION ============ -->
+<header class="navbar" id="navbar">
+  <div class="container nav-inner">
+    <a href="#home" class="logo">✈ Travel<span>Explorer</span></a>
+    <nav id="navMenu" aria-label="Main navigation">
+      <a href="#home">Home</a>
+      <a href="#destinations">Destinations</a>
+      <a href="#planner">Trip Planner</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <div class="nav-actions">
+      <button class="icon-btn" id="themeToggle" aria-label="Toggle dark mode">🌙</button>
+      <button class="icon-btn menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false">☰</button>
+    </div>
+  </div>
+</header>
+
+<main>
+<!-- ============ HERO ============ -->
+<section class="hero" id="home">
+  <div class="hero-content">
+    <h1>Discover the World, One Journey at a Time</h1>
+    <p>From misty hills and golden beaches to royal palaces and ancient ruins, find your next trip, plan your budget and travel with confidence.</p>
+    <a href="#destinations" class="btn btn-gold">Explore Destinations</a>
+  </div>
+  <a href="#destinations" class="scroll-hint" aria-label="Scroll down">⌄</a>
+</section>
+
+<!-- ============ DESTINATIONS ============ -->
+<section class="section" id="destinations">
+  <div class="container">
+    <div class="section-head reveal">
+      <h2>Popular Destinations</h2>
+      <p>Costs shown are rough estimates per person per day and can change with season and travel style.</p>
+    </div>
+
+    <div class="toolbar reveal">
+      <input type="search" id="searchInput" placeholder="Search destinations by name…" aria-label="Search destinations">
+      <div class="chips" id="filters" role="group" aria-label="Filter by category">
+        <button class="chip active" data-filter="All">All</button>
+        <button class="chip" data-filter="Mountains">Mountains</button>
+        <button class="chip" data-filter="Beaches">Beaches</button>
+        <button class="chip" data-filter="Historical Places">Historical Places</button>
+        <button class="chip" data-filter="Nature">Nature</button>
+        <button class="chip" data-filter="Favourites">♥ Favourites <span id="favCount">0</span></button>
+      </div>
+    </div>
+
+    <div class="cards" id="cards"></div>
+    <p class="empty" id="emptyMsg" hidden>No destinations match your search. Try another name or category.</p>
+  </div>
+</section>
+
+<!-- ============ BUDGET CALCULATOR ============ -->
+<section class="section alt" id="budget">
+  <div class="container calc-wrap">
+    <div class="reveal">
+      <h2>Travel Budget Calculator</h2>
+      <p>Enter your trip details and see an estimated total in Indian rupees. It updates as you type.</p>
+      <form id="budgetForm" class="form-grid" novalidate>
+        <label>Number of travellers<input type="number" id="bTravellers" min="1" value="2"></label>
+        <label>Number of days<input type="number" id="bDays" min="1" value="4"></label>
+        <label>Accommodation per day (₹, total)<input type="number" id="bStay" min="0" value="2500"></label>
+        <label>Food per person per day (₹)<input type="number" id="bFood" min="0" value="600"></label>
+        <label class="full">Total transport cost (₹)<input type="number" id="bTransport" min="0" value="4000"></label>
+      </form>
+    </div>
+    <div class="result-card reveal" aria-live="polite">
+      <h3>Estimated Total</h3>
+      <div class="big" id="bTotal">₹0</div>
+      <ul class="breakdown">
+        <li><span>Accommodation</span><b id="rStay">₹0</b></li>
+        <li><span>Food</span><b id="rFood">₹0</b></li>
+        <li><span>Transport</span><b id="rTransport">₹0</b></li>
+        <li><span>Per person</span><b id="rPerson">₹0</b></li>
+      </ul>
+      <small id="bError" class="error"></small>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TRIP PLANNER ============ -->
+<section class="section" id="planner">
+  <div class="container calc-wrap">
+    <div class="reveal">
+      <h2>Trip Planner</h2>
+      <p class="notice">⚠ Demo only. This planner does not make real bookings, reservations or payments.</p>
+      <form id="plannerForm" class="form-grid" novalidate>
+        <label class="full">Destination
+          <select id="pDest"><option value="">Select a destination</option></select>
+          <small class="error" id="pDestErr"></small>
+        </label>
+        <label>Departure date<input type="date" id="pFrom"><small class="error" id="pFromErr"></small></label>
+        <label>Return date<input type="date" id="pTo"><small class="error" id="pToErr"></small></label>
+        <label class="full">Number of travellers<input type="number" id="pPeople" min="1" max="20" value="2"><small class="error" id="pPeopleErr"></small></label>
+        <button type="submit" class="btn btn-green full">Create Sample Trip Summary</button>
+      </form>
+    </div>
+    <div class="result-card reveal" id="summary" aria-live="polite">
+      <h3>Trip Summary</h3>
+      <p class="muted">Fill in the form to see a sample summary here.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TESTIMONIALS ============ -->
+<section class="section alt" id="testimonials">
+  <div class="container">
+    <div class="section-head reveal">
+      <h2>What Travellers Say</h2>
+      <p>Sample testimonials for demonstration purposes.</p>
+    </div>
+    <div class="testimonials reveal">
+      <blockquote class="t-card"><p>“The budget calculator helped us plan our Coorg weekend without any surprises.”</p><cite>Ananya R. <span>(sample)</span></cite></blockquote>
+      <blockquote class="t-card"><p>“Loved the destination details. We knew exactly what to see in Hampi.”</p><cite>Rahul M. <span>(sample)</span></cite></blockquote>
+      <blockquote class="t-card"><p>“Simple, clear and easy to use on my phone while travelling.”</p><cite>Meera S. <span>(sample)</span></cite></blockquote>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ABOUT ============ -->
+<section class="section" id="about">
+  <div class="container about">
+    <div class="reveal">
+      <h2>About Travel Explorer</h2>
+      <p>Travel Explorer is a demo tourism platform that helps you discover places, compare costs and plan your journey in one place.</p>
+      <p>We focus on clear information, honest estimates and a simple experience, so you spend less time planning and more time exploring.</p>
+      <div class="stats">
+        <div><b>8</b><span>Destinations</span></div>
+        <div><b>4</b><span>Categories</span></div>
+        <div><b>100%</b><span>Free to use</span></div>
+      </div>
+    </div>
+    <img class="reveal about-img" src="" alt="Traveller looking at a map" loading="lazy" data-fallback="🧭">
+  </div>
+</section>
+
+<!-- ============ CONTACT ============ -->
+<section class="section alt" id="contact">
+  <div class="container calc-wrap">
+    <div class="reveal">
+      <h2>Contact Us</h2>
+      <p>Questions or feedback? Send us a message. This is a demo form, so the message is not actually sent anywhere.</p>
+      <form id="contactForm" class="form-grid" novalidate>
+        <label>Name<input type="text" id="cName" autocomplete="name"><small class="error" id="cNameErr"></small></label>
+        <label>Email<input type="email" id="cEmail" autocomplete="email"><small class="error" id="cEmailErr"></small></label>
+        <label class="full">Message<textarea id="cMsg" rows="4"></textarea><small class="error" id="cMsgErr"></small></label>
+        <button type="submit" class="btn btn-green full">Send Message</button>
+        <p class="success full" id="cSuccess" role="status"></p>
+      </form>
+    </div>
+    <div class="result-card reveal">
+      <h3>Get in touch</h3>
+      <ul class="breakdown">
+        <li><span>Email</span><b>hello@travelexplorer.example</b></li>
+        <li><span>Phone</span><b>+91 90000 00000</b></li>
+        <li><span>Hours</span><b>Mon–Sat, 9 am–6 pm</b></li>
+      </ul>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+  <div class="container foot-inner">
+    <div>
+      <a href="#home" class="logo">✈ Travel<span>Explorer</span></a>
+      <p>Discover the World, One Journey at a Time.</p>
+    </div>
+    <div class="socials" aria-label="Social media links">
+      <a href="#" aria-label="Facebook">f</a>
+      <a href="#" aria-label="Instagram">ig</a>
+      <a href="#" aria-label="X (Twitter)">X</a>
+      <a href="#" aria-label="YouTube">▶</a>
+    </div>
+  </div>
+  <p class="copy">© <span id="year"></span> Travel Explorer. Demo website, no real bookings.</p>
+</footer>
+
+<!-- ============ DESTINATION DETAILS MODAL ============ -->
+<div class="modal" id="modal" hidden>
+  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="mTitle">
+    <button class="modal-close" id="modalClose" aria-label="Close details">✕</button>
+    <div class="modal-img" id="mImg"></div>
+    <div class="modal-body">
+      <h3 id="mTitle"></h3>
+      <p id="mDesc"></p>
+      <h4>Famous attractions</h4><ul id="mAttractions"></ul>
+      <h4>Recommended activities</h4><ul id="mActivities"></ul>
+      <h4>Estimated expenses (per person)</h4><ul id="mExpenses"></ul>
+      <button class="btn btn-green" id="mPlan">Plan a trip here</button>
+    </div>
+  </div>
+</div>
+
+<button class="to-top" id="toTop" aria-label="Back to top" hidden>↑</button>
+
+<script>
+/* ===========================================================
+   Travel Explorer - script.js (plain JavaScript, no frameworks)
+   =========================================================== */
+
+/* ---------- 1. Destination data ----------
+   To add a destination, copy one object and edit it.
+   If an image fails to load, a gradient + emoji is shown instead.
+   Costs are rough sample estimates per person per day (in rupees). */
+const destinations = [
+  {
+    id: 'coorg', name: 'Coorg', emoji: '☕', categories: ['Mountains', 'Nature'], costPerDay: 3500,
+    image: '',
+    desc: 'Misty hills, coffee estates and waterfalls in the Western Ghats.',
+    attractions: ['Abbey Falls', "Raja's Seat", 'Dubare Elephant Camp', 'Namdroling Monastery'],
+    activities: ['Coffee plantation walk', 'Trekking at Tadiandamol', 'River rafting (seasonal)', 'Homestay with local food'],
+    expenses: { Stay: 1800, Food: 700, 'Local transport': 600, Activities: 400 }
+  },
+  {
+    id: 'mysore', name: 'Mysore', emoji: '🏰', categories: ['Historical Places'], costPerDay: 2800,
+    image: '',
+    desc: 'The royal city of palaces, silk, sandalwood and grand festivals.',
+    attractions: ['Mysore Palace', 'Chamundi Hill', 'Brindavan Gardens', 'Devaraja Market'],
+    activities: ['Palace light show (Sundays and festivals)', 'Silk saree shopping', 'Yoga class', 'Sample Mysore Pak'],
+    expenses: { Stay: 1500, Food: 600, 'Local transport': 400, Entry: 300 }
+  },
+  {
+    id: 'hampi', name: 'Hampi', emoji: '🗿', categories: ['Historical Places', 'Nature'], costPerDay: 2500,
+    image: '',
+    desc: 'Ruins of the Vijayanagara empire among boulders and banana fields.',
+    attractions: ['Virupaksha Temple', 'Vittala Temple and Stone Chariot', 'Hampi Bazaar', 'Lotus Mahal'],
+    activities: ['Sunrise at Matanga Hill', 'Cycle through the ruins', 'Coracle ride on the Tungabhadra', 'Boulder walks'],
+    expenses: { Stay: 1200, Food: 500, 'Local transport': 500, Entry: 300 }
+  },
+  {
+    id: 'goa', name: 'Goa', emoji: '🏖', categories: ['Beaches'], costPerDay: 4500,
+    image: '',
+    desc: 'Golden beaches, old Portuguese churches and a relaxed coastal vibe.',
+    attractions: ['Baga and Calangute Beach', 'Basilica of Bom Jesus', 'Fort Aguada', 'Dudhsagar Falls'],
+    activities: ['Water sports', 'Sunset at Chapora Fort', 'Fontainhas walking tour', 'Seafood dining'],
+    expenses: { Stay: 2400, Food: 1000, 'Local transport': 700, Activities: 400 }
+  },
+  {
+    id: 'manali', name: 'Manali', emoji: '🏔', categories: ['Mountains', 'Nature'], costPerDay: 4000,
+    image: '',
+    desc: 'Snowy peaks, pine forests and adventure in the Himalayas.',
+    attractions: ['Solang Valley', 'Hadimba Temple', 'Old Manali', 'Rohtang Pass (permit and season dependent)'],
+    activities: ['Paragliding', 'Snow activities in winter', 'Beas River walk', 'Cafe hopping in Old Manali'],
+    expenses: { Stay: 2000, Food: 800, 'Local transport': 800, Activities: 400 }
+  },
+  {
+    id: 'jaipur', name: 'Jaipur', emoji: '🕌', categories: ['Historical Places'], costPerDay: 3500,
+    image: '',
+    desc: 'The Pink City of forts, palaces, bazaars and Rajasthani cuisine.',
+    attractions: ['Amber Fort', 'Hawa Mahal', 'City Palace', 'Jantar Mantar'],
+    activities: ['Elephant-free fort tours', 'Block printing workshop', 'Shopping at Johari Bazaar', 'Dal baati churma dinner'],
+    expenses: { Stay: 1800, Food: 700, 'Local transport': 600, Entry: 400 }
+  },
+  {
+    id: 'kerala', name: 'Kerala', emoji: '🛶', categories: ['Beaches', 'Nature'], costPerDay: 4500,
+    image: '',
+    desc: 'Backwaters, beaches, spice hills and houseboat holidays.',
+    attractions: ['Alleppey backwaters', 'Munnar tea gardens', 'Kovalam Beach', 'Fort Kochi'],
+    activities: ['Houseboat stay', 'Ayurvedic massage', 'Kathakali show', 'Spice plantation visit'],
+    expenses: { Stay: 2200, Food: 800, 'Local transport': 800, Activities: 700 }
+  },
+  {
+    id: 'ooty', name: 'Ooty', emoji: '🍃', categories: ['Mountains', 'Nature'], costPerDay: 3500,
+    image: '',
+    desc: 'A cool hill station with tea gardens, lakes and a toy train.',
+    attractions: ['Botanical Garden', 'Ooty Lake', 'Doddabetta Peak', 'Nilgiri Mountain Railway'],
+    activities: ['Toy train ride', 'Boating', 'Tea factory visit', 'Walks in the Nilgiris'],
+    expenses: { Stay: 1800, Food: 700, 'Local transport': 600, Activities: 400 }
+  }
+];
+
+/* ---------- Built-in artwork (inline SVG, so the page needs no image files) ---------- */
+const svgUri = (s) => 'data:image/svg+xml;base64,' + btoa(s);
+function ridge(c, base, amp, f, ph) {
+  let p = `M0 600 L0 ${base}`;
+  for (let x = 0; x <= 900; x += 30) {
+    const y = base - amp * (0.55 + 0.3 * Math.sin(x / 900 * f + ph) + 0.15 * Math.sin(x / 900 * f * 2.7 + ph * 2));
+    p += ` L${x} ${y.toFixed(0)}`;
+  }
+  return `<path d="${p} L900 600Z" fill="${c}"/>`;
+}
+function peak(cx, top, w, base, c) {
+  const h = base - top;
+  return `<path d="M${cx - w} ${base} L${cx} ${top} L${cx + w} ${base}Z" fill="${c}"/>` +
+    `<path d="M${cx} ${top} L${cx - w * .3} ${top + h * .3} L${cx - w * .1} ${top + h * .24} L${cx} ${top + h * .33} L${cx + w * .12} ${top + h * .24} L${cx + w * .3} ${top + h * .3}Z" fill="#fff"/>`;
+}
+function palm(x, y, s) {
+  return `<g transform="translate(${x} ${y}) scale(${s})"><path d="M0 0 Q14 -80 0 -150" stroke="#5b3a1e" stroke-width="9" fill="none"/><g fill="#1f7a4a">` +
+    [[-40, -150, -20], [40, -150, 20], [-32, -165, -55], [32, -165, 55], [0, -178, 0]]
+      .map(([dx, dy, r]) => `<ellipse cx="${dx}" cy="${dy}" rx="44" ry="9" transform="rotate(${r} 0 -150)"/>`).join('') + `</g></g>`;
+}
+const sun = (x, y, r, c) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${c}" opacity=".92"/>`;
+function art(k) {
+  const T = { coorg: ['#bfe9d6', '#f3fbe9'], manali: ['#6dbbea', '#eaf7ff'], ooty: ['#a5dcf5', '#f6fcff'], goa: ['#ff9f5a', '#ffe9b0'],
+    kerala: ['#8fdccb', '#effff8'], mysore: ['#ffc864', '#fff3d6'], jaipur: ['#ff8f7a', '#ffe4cf'], hampi: ['#ff9f55', '#ffe5b3'], hero: ['#0b3d2e', '#3aa6d0'] }[k];
+  let s = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${T[0]}"/><stop offset="1" stop-color="${T[1]}"/></linearGradient></defs><rect width="900" height="600" fill="url(#g)"/>`;
+  if (k === 'coorg') s += sun(700, 150, 50, '#fff7c2') + ridge('#8cc9a4', 330, 120, 6, 0) + ridge('#5aa57c', 400, 110, 8, 2) + ridge('#2f7d58', 480, 100, 5, 4) + ridge('#1a5a3f', 560, 70, 9, 1);
+  if (k === 'manali' || k === 'hero') {
+    if (k === 'hero') s += sun(450, 340, 130, '#f4b400');
+    else s += sun(150, 130, 40, '#fff');
+    s += peak(250, 110, 270, 520, k === 'hero' ? '#1b6c86' : '#6e8aa8') + peak(570, 70, 320, 520, k === 'hero' ? '#14566e' : '#5a7796') + peak(800, 200, 210, 520, k === 'hero' ? '#237d98' : '#7f9bb6');
+    s += ridge(k === 'hero' ? '#0b3d2e' : '#2f6b53', 470, 80, 7, 1);
+    for (let x = 20; x < 900; x += 60) s += `<path d="M${x} 600 L${x + 30} 500 L${x + 60} 600Z" fill="${k === 'hero' ? '#082d22' : '#1f5a43'}"/>`;
+  }
+  if (k === 'ooty') {
+    s += sun(720, 130, 45, '#fff9d0') + ridge('#7fc58f', 320, 100, 5, 1) + ridge('#4fa56a', 400, 90, 7, 3) + ridge('#2f8a52', 470, 90, 6, 0);
+    s += `<ellipse cx="300" cy="545" rx="220" ry="34" fill="#7ac7e8"/>`;
+    for (let y = 490; y < 600; y += 16) s += `<path d="M520 ${y} Q700 ${y - 18} 900 ${y}" stroke="#5cc383" stroke-width="3" fill="none" opacity=".7"/>`;
+  }
+  if (k === 'goa') {
+    s += sun(450, 300, 75, '#fff1a8') + `<rect y="330" width="900" height="270" fill="#1fa0c9"/><rect y="330" width="900" height="40" fill="#52c3e0" opacity=".6"/>`;
+    for (let y = 390; y < 470; y += 22) s += `<path d="M0 ${y} Q110 ${y - 10} 220 ${y} T440 ${y} T660 ${y} T900 ${y}" stroke="#fff" stroke-width="3" fill="none" opacity=".5"/>`;
+    s += `<path d="M0 480 Q300 430 900 505 L900 600 L0 600Z" fill="#f5d7a1"/>` + palm(170, 540, 1.2) + palm(770, 560, .9);
+  }
+  if (k === 'kerala') {
+    s += sun(760, 120, 42, '#fffbd0') + ridge('#4cae7a', 360, 50, 6, 2) + `<rect y="390" width="900" height="210" fill="#2f9c86"/><rect y="390" width="900" height="30" fill="#6fd0b5" opacity=".6"/>`;
+    s += palm(90, 410, 1.3) + palm(240, 400, .8) + palm(810, 410, 1.15);
+    s += `<path d="M330 470 L610 470 L580 510 L360 510Z" fill="#6b3f1e"/><rect x="385" y="428" width="190" height="42" fill="#f4b400"/><path d="M372 430 Q480 385 590 430Z" fill="#c98a00"/><rect x="330" y="515" width="280" height="8" fill="#000" opacity=".12"/>`;
+  }
+  if (k === 'mysore') {
+    s += sun(790, 110, 45, '#fff') + `<rect x="190" y="390" width="520" height="170" fill="#fff0c9"/><rect y="550" width="900" height="50" fill="#3f9168"/>`;
+    for (let i = 0; i < 9; i++) s += `<path d="M${215 + i * 56} 550 L${215 + i * 56} 470 Q${235 + i * 56} 435 ${255 + i * 56} 470 L${255 + i * 56} 550Z" fill="#c98a00" opacity=".75"/>`;
+    [250, 650].forEach((x) => s += `<path d="M${x - 50} 390 Q${x} 280 ${x + 50} 390Z" fill="#f4b400"/><rect x="${x - 3}" y="262" width="6" height="30" fill="#c98a00"/>`);
+    s += `<rect x="395" y="300" width="110" height="90" fill="#ffe29a"/><path d="M385 300 Q450 190 515 300Z" fill="#f4b400"/><rect x="447" y="168" width="6" height="40" fill="#c98a00"/>`;
+  }
+  if (k === 'jaipur') {
+    s += sun(780, 100, 40, '#fff5dc') + `<rect y="540" width="900" height="60" fill="#d9a066"/>`;
+    for (let i = 0; i < 5; i++) {
+      const w = 440 - i * 70, y = 460 - i * 78;
+      s += `<rect x="${450 - w / 2}" y="${y}" width="${w}" height="80" fill="${['#e8736a', '#ee8479', '#f3978c', '#f7aa9f', '#fbbdb2'][i]}"/>`;
+      for (let x = 450 - w / 2 + 22; x < 450 + w / 2 - 30; x += 44) s += `<path d="M${x} ${y + 62} L${x} ${y + 34} Q${x + 11} ${y + 14} ${x + 22} ${y + 34} L${x + 22} ${y + 62}Z" fill="#7a2e3a"/>`;
+    }
+  }
+  if (k === 'hampi') {
+    s += sun(650, 170, 62, '#fff3b0') + ridge('#d99a55', 470, 60, 5, 1);
+    for (let i = 0; i < 5; i++) s += `<rect x="${365 + i * 16}" y="${430 - i * 30}" width="${170 - i * 32}" height="30" fill="#d9a066"/>`;
+    s += `<rect x="340" y="460" width="220" height="90" fill="#c68a50"/>`;
+    for (let x = 352; x < 550; x += 40) s += `<rect x="${x}" y="470" width="14" height="80" fill="#a86a38"/>`;
+    s += `<ellipse cx="120" cy="510" rx="120" ry="75" fill="#a8683a"/><ellipse cx="270" cy="555" rx="95" ry="48" fill="#8a4f2a"/><ellipse cx="790" cy="505" rx="125" ry="85" fill="#a8683a"/><ellipse cx="660" cy="560" rx="85" ry="42" fill="#8a4f2a"/>`;
+  }
+  return svgUri(s + '</svg>');
+}
+const sceneById = { coorg: 'coorg', mysore: 'mysore', hampi: 'hampi', goa: 'goa', manali: 'manali', jaipur: 'jaipur', kerala: 'kerala', ooty: 'ooty' };
+
+destinations.forEach((d) => { d.image = art(sceneById[d.id]); });
+document.documentElement.style.setProperty('--hero-img', `url("${art('hero')}")`);
+const aboutImg = document.querySelector('.about-img'); if (aboutImg) aboutImg.src = art('ooty');
+
+/* ---------- 2. Small helper functions ---------- */
+const $ = (selector) => document.querySelector(selector);
+const $$ = (selector) => document.querySelectorAll(selector);
+
+// Format a number as Indian rupees, e.g. 12500 -> ₹12,500
+const rupees = (n) => '₹' + Math.round(n).toLocaleString('en-IN');
+
+// localStorage can fail (private mode), so wrap it safely
+function load(key, fallback) {
+  try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch (e) { return fallback; }
+}
+function save(key, value) {
+  try { localStorage.setItem(key, JSON.stringify(value)); } catch (e) { /* ignore */ }
+}
+
+// Show an error under a field and mark it red. Pass '' to clear.
+function setError(inputId, errId, message) {
+  $('#' + errId).textContent = message;
+  $('#' + inputId).classList.toggle('invalid', Boolean(message));
+  return !message; // true when valid
+}
+
+/* ---------- 3. State ---------- */
+let favourites = load('te-favourites', []);   // array of destination ids
+let activeFilter = 'All';
+let searchText = '';
+let openDestination = null;                   // destination shown in modal
+
+/* ---------- 4. Render destination cards ---------- */
+function renderCards() {
+  const list = destinations.filter((d) => {
+    const matchName = d.name.toLowerCase().includes(searchText.toLowerCase().trim());
+    const matchCat =
+      activeFilter === 'All' ? true :
+      activeFilter === 'Favourites' ? favourites.includes(d.id) :
+      d.categories.includes(activeFilter);
+    return matchName && matchCat;
+  });
+
+  const box = $('#cards');
+  box.innerHTML = '';
+
+  list.forEach((d) => {
+    const isFav = favourites.includes(d.id);
+    const card = document.createElement('article');
+    card.className = 'card';
+    card.innerHTML = `
+      <div class="card-img">
+        <span>${d.emoji}</span>
+        <img src="${d.image}" alt="${d.name} travel photo" loading="lazy">
+        <button class="heart ${isFav ? 'on' : ''}" data-id="${d.id}"
+          aria-label="${isFav ? 'Remove' : 'Add'} ${d.name} ${isFav ? 'from' : 'to'} favourites"
+          aria-pressed="${isFav}">${isFav ? '♥' : '♡'}</button>
+      </div>
+      <div class="card-body">
+        <h3>${d.name}</h3>
+        <div class="tags">${d.categories.map((c) => `<span>${c}</span>`).join('')}</div>
+        <p>${d.desc}</p>
+        <div class="card-foot">
+          <div class="cost"><small>Est. per person / day</small><b>${rupees(d.costPerDay)}</b></div>
+          <button class="more" data-id="${d.id}">Explore More</button>
+        </div>
+      </div>`;
+    box.appendChild(card);
+  });
+
+  // If a photo can't load, remove it so the gradient + emoji shows
+  box.querySelectorAll('img').forEach((img) => img.addEventListener('error', () => img.remove()));
+
+  $('#emptyMsg').hidden = list.length > 0;
+  $('#favCount').textContent = favourites.length;
+}
+
+/* ---------- 5. Search, filters, hearts, "Explore More" ---------- */
+$('#searchInput').addEventListener('input', (e) => { searchText = e.target.value; renderCards(); });
+
+$('#filters').addEventListener('click', (e) => {
+  const chip = e.target.closest('.chip');
+  if (!chip) return;
+  $$('.chip').forEach((c) => c.classList.remove('active'));
+  chip.classList.add('active');
+  activeFilter = chip.dataset.filter;
+  renderCards();
+});
+
+// One listener for all cards (event delegation)
+$('#cards').addEventListener('click', (e) => {
+  const heart = e.target.closest('.heart');
+  const more = e.target.closest('.more');
+
+  if (heart) {
+    const id = heart.dataset.id;
+    favourites = favourites.includes(id) ? favourites.filter((f) => f !== id) : [...favourites, id];
+    save('te-favourites', favourites);     // remember after refresh
+    renderCards();
+  }
+  if (more) openModal(more.dataset.id);
+});
+
+/* ---------- 6. Destination details modal ---------- */
+function openModal(id) {
+  const d = destinations.find((x) => x.id === id);
+  if (!d) return;
+  openDestination = d;
+  $('#mTitle').textContent = d.name;
+  $('#mDesc').textContent = d.desc;
+  $('#mImg').style.backgroundImage = `linear-gradient(rgba(0,0,0,.05), rgba(0,0,0,.25)), url('${d.image}')`;
+  $('#mAttractions').innerHTML = d.attractions.map((a) => `<li>${a}</li>`).join('');
+  $('#mActivities').innerHTML = d.activities.map((a) => `<li>${a}</li>`).join('');
+
+  const total = Object.values(d.expenses).reduce((s, v) => s + v, 0);
+  $('#mExpenses').innerHTML =
+    Object.entries(d.expenses).map(([k, v]) => `<li>${k}: ${rupees(v)} per day</li>`).join('') +
+    `<li><b>Approx. total: ${rupees(total)} per person per day (sample estimate)</b></li>`;
+
+  $('#modal').hidden = false;
+  document.body.style.overflow = 'hidden';
+  $('#modalClose').focus();
+}
+function closeModal() {
+  $('#modal').hidden = true;
+  document.body.style.overflow = '';
+}
+$('#modalClose').addEventListener('click', closeModal);
+$('#modal').addEventListener('click', (e) => { if (e.target.id === 'modal') closeModal(); });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+
+// "Plan a trip here" fills the planner and scrolls to it
+$('#mPlan').addEventListener('click', () => {
+  $('#pDest').value = openDestination.id;
+  closeModal();
+  $('#planner').scrollIntoView({ behavior: 'smooth' });
+});
+
+/* ---------- 7. Budget calculator ---------- */
+function calculateBudget() {
+  const people = Number($('#bTravellers').value);
+  const days = Number($('#bDays').value);
+  const stay = Number($('#bStay').value);
+  const food = Number($('#bFood').value);
+  const transport = Number($('#bTransport').value);
+
+  // Basic validation: travellers and days must be at least 1, costs not negative
+  const bad = people < 1 || days < 1 || stay < 0 || food < 0 || transport < 0 ||
+              [people, days, stay, food, transport].some(Number.isNaN);
+  $('#bError').textContent = bad ? 'Please enter at least 1 traveller and 1 day, and no negative costs.' : '';
+  if (bad) return;
+
+  const stayTotal = stay * days;              // accommodation is a daily total
+  const foodTotal = food * people * days;     // food is per person per day
+  const total = stayTotal + foodTotal + transport;
+
+  $('#rStay').textContent = rupees(stayTotal);
+  $('#rFood').textContent = rupees(foodTotal);
+  $('#rTransport').textContent = rupees(transport);
+  $('#rPerson').textContent = rupees(total / people);
+  $('#bTotal').textContent = rupees(total);
+}
+$('#budgetForm').addEventListener('input', calculateBudget);
+$('#budgetForm').addEventListener('submit', (e) => e.preventDefault());
+
+/* ---------- 8. Trip planner ---------- */
+// Fill the destination dropdown from our data
+destinations.forEach((d) => {
+  const opt = document.createElement('option');
+  opt.value = d.id; opt.textContent = d.name;
+  $('#pDest').appendChild(opt);
+});
+
+// Do not allow past dates
+const today = new Date().toISOString().split('T')[0];
+$('#pFrom').min = today;
+$('#pTo').min = today;
+
+$('#plannerForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const destId = $('#pDest').value;
+  const from = $('#pFrom').value;
+  const to = $('#pTo').value;
+  const people = Number($('#pPeople').value);
+
+  // Run every check (don't stop at the first error)
+  const ok = [
+    setError('pDest', 'pDestErr', destId ? '' : 'Please choose a destination.'),
+    setError('pFrom', 'pFromErr', !from ? 'Choose a departure date.' : from < today ? 'Departure cannot be in the past.' : ''),
+    setError('pTo', 'pToErr', !to ? 'Choose a return date.' : (from && to < from) ? 'Return date cannot be earlier than departure.' : ''),
+    setError('pPeople', 'pPeopleErr', people >= 1 && people <= 20 ? '' : 'Enter 1 to 20 travellers.')
+  ].every(Boolean);
+  if (!ok) return;
+
+  const d = destinations.find((x) => x.id === destId);
+  // Days are counted inclusively (same-day trip = 1 day)
+  const days = Math.round((new Date(to) - new Date(from)) / 86400000) + 1;
+  const total = d.costPerDay * days * people;
+  const fmt = (s) => new Date(s).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+
+  $('#summary').innerHTML = `
+    <h3>Sample Trip Summary</h3>
+    <ul class="breakdown">
+      <li><span>Destination</span><b>${d.name}</b></li>
+      <li><span>Departure</span><b>${fmt(from)}</b></li>
+      <li><span>Return</span><b>${fmt(to)}</b></li>
+      <li><span>Duration</span><b>${days} day${days > 1 ? 's' : ''}</b></li>
+      <li><span>Travellers</span><b>${people}</b></li>
+      <li><span>Sample estimate</span><b>${rupees(total)}</b></li>
+    </ul>
+    <p class="muted" style="margin-top:14px">Demo only. No booking has been made and no payment was taken. The estimate uses the sample cost per person per day.</p>`;
+});
+// Clear a field's error as soon as the user edits it
+['pDest', 'pFrom', 'pTo', 'pPeople'].forEach((id) =>
+  $('#' + id).addEventListener('input', () => setError(id, id + 'Err', '')));
+
+/* ---------- 9. Contact form validation ---------- */
+$('#contactForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const name = $('#cName').value.trim();
+  const email = $('#cEmail').value.trim();
+  const msg = $('#cMsg').value.trim();
+  const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+  const ok = [
+    setError('cName', 'cNameErr', name.length >= 2 ? '' : 'Please enter your name.'),
+    setError('cEmail', 'cEmailErr', emailOk ? '' : 'Please enter a valid email address.'),
+    setError('cMsg', 'cMsgErr', msg.length >= 10 ? '' : 'Message must be at least 10 characters.')
+  ].every(Boolean);
+
+  $('#cSuccess').textContent = ok ? `Thank you, ${name}! (Demo: your message was not actually sent.)` : '';
+  if (ok) e.target.reset();
+});
+
+/* ---------- 10. Dark mode (remembered) ---------- */
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  $('#themeToggle').textContent = theme === 'dark' ? '☀️' : '🌙';
+  save('te-theme', theme);
+}
+applyTheme(load('te-theme', window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
+$('#themeToggle').addEventListener('click', () =>
+  applyTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'));
+
+/* ---------- 11. Navbar: mobile menu, scrolled style, active link, back to top ---------- */
+const menuBtn = $('#menuBtn'), navMenu = $('#navMenu');
+menuBtn.addEventListener('click', () => {
+  const open = navMenu.classList.toggle('open');
+  menuBtn.setAttribute('aria-expanded', open);
+});
+navMenu.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => {
+  navMenu.classList.remove('open');
+  menuBtn.setAttribute('aria-expanded', 'false');
+}));
+
+const sections = ['home', 'destinations', 'planner', 'about', 'contact'];
+function onScroll() {
+  const y = window.scrollY;
+  $('#navbar').classList.toggle('scrolled', y > 60);
+  $('#toTop').hidden = y < 500;
+  // Highlight the nav link of the section currently in view
+  let current = 'home';
+  sections.forEach((id) => { if (document.getElementById(id).offsetTop - 120 <= y) current = id; });
+  navMenu.querySelectorAll('a').forEach((a) => a.classList.toggle('active', a.getAttribute('href') === '#' + current));
+}
+window.addEventListener('scroll', onScroll, { passive: true });
+$('#toTop').addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+/* ---------- 12. Scroll animations ---------- */
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((en) => { if (en.isIntersecting) { en.target.classList.add('visible'); observer.unobserve(en.target); } });
+}, { threshold: 0.12 });
+$$('.reveal').forEach((el) => observer.observe(el));
+
+// Fallback gradient for static images that fail to load
+$$('img[data-fallback]').forEach((img) => img.addEventListener('error', () => img.removeAttribute('src')));
+
+/* ---------- 13. Start ---------- */
+$('#year').textContent = new Date().getFullYear();
+renderCards();
+calculateBudget();
+onScroll();
+
+</script>
+</body>
+</html>
